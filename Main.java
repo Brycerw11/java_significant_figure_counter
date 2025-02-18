@@ -1,53 +1,43 @@
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         int sigFigs = 0;
+        String numberString;
+        float number;
+
         Scanner numberScanner = new Scanner(System.in);
 
-        String number = numberScanner.nextLine();
+        numberString = numberScanner.nextLine();
         try{
-            Float.parseFloat(number); //Check to make sure it can find a number
+            number = Float.parseFloat(numberString); //Check to make sure it can find a number
         }
         catch(Exception e){
             //If not tell them to restart program
             System.out.println("That's not a valid Number. \nPlease restart the program");
         }
 
-        System.out.println(number);
+        //Start to count SigFigs
+        char[] chrArray = numberString.toCharArray();
 
-        int dotPos = 0;
-
-        //Find dotPos
-        for (int i = 1; i <= number.length(); i++){
-            if (i != number.length()){
-                if(Objects.equals(number.substring(i, (i + 1)), ".")){
-                    System.out.println("Contains .");
-                    dotPos = i;
+        boolean isTrailingZero = true;
+        for (char currentCharacter : chrArray) {
+            //ignore trailing zeros
+            if (isTrailingZero) {
+                if (currentCharacter != '0') {
+                    isTrailingZero = false;
+                } else {
+                    continue;
                 }
             }
-            else {
-                dotPos = number.length();
-            }
-        }
 
-        //Before dot
-        boolean startOfSignificance = false;
-        //Find dotPos
-        for (int i = 1; i < dotPos; i++){
-            if (!startOfSignificance){
-                if (!Objects.equals(number.substring(i, (i + 1)), "0")){
-                    startOfSignificance = true;
-                    sigFigs++;
-                }
+            if (currentCharacter == '.'){
+                continue; //ignore the decimal point
             }
-            else {
-                sigFigs++;
-            }
+
+            sigFigs++;
         }
 
         System.out.println(sigFigs);
-
     }
 }
